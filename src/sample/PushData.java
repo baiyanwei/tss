@@ -1,6 +1,9 @@
 package sample;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -47,7 +50,7 @@ public class PushData extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		doPost(request,response);
+		doPost(request, response);
 	}
 
 	/**
@@ -80,6 +83,20 @@ public class PushData extends HttpServlet {
 		out.close();
 	}
 
+	@Override
+	protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		// super.doHead(req, resp);
+	}
+
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		System.out.println("----------------doPut--------" + request.getHeader(InterfaceParameter.COUNT) + "------------------->");
+		System.out.println("Content:" + getBody(request));
+		System.out.println(request.getContentLength());
+	}
+
 	/**
 	 * Initialization of the servlet. <br>
 	 * 
@@ -90,4 +107,37 @@ public class PushData extends HttpServlet {
 		// Put your code here
 	}
 
+	public String getBody(HttpServletRequest request) throws IOException {
+
+		String body = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
+
+		try {
+			InputStream inputStream = request.getInputStream();
+			if (inputStream != null) {
+				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+				char[] charBuffer = new char[128];
+				int bytesRead = -1;
+				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+					stringBuilder.append(charBuffer, 0, bytesRead);
+				}
+			} else {
+				stringBuilder.append("");
+			}
+		} catch (IOException ex) {
+			throw ex;
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException ex) {
+					throw ex;
+				}
+			}
+		}
+
+		body = stringBuilder.toString();
+		return body;
+	}
 }

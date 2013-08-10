@@ -1,6 +1,9 @@
 package sample;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import java.io.PrintWriter;
 import java.util.Date;
@@ -74,7 +77,23 @@ public class Fetch extends HttpServlet {
 		if(request.getHeader(InterfaceParameter.COUNT)!=null){
 			count=Integer.valueOf(request.getHeader(InterfaceParameter.COUNT));
 		}
-		response.setContentType("text/json");
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		out.print(getOneJobTest(count));
+		out.flush();
+		out.close();
+	}
+
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		System.out.println("----------------fetch--------" + request.getHeader(InterfaceParameter.COUNT) + "------------------->");
+		System.out.println("----------------content--------------------------"+getBody(request));
+		int count=1;
+		if(request.getHeader(InterfaceParameter.COUNT)!=null){
+			count=Integer.valueOf(request.getHeader(InterfaceParameter.COUNT));
+		}
+		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.print(getOneJobTest(count));
 		out.flush();
@@ -109,9 +128,11 @@ public class Fetch extends HttpServlet {
 				taskObjA.put(MonitoringTask.TASK_TARGET_IP_PROPERTY_NAME, "localhost");
 				//
 				JSONObject metaObjA = new JSONObject();
-				metaObjA.put("user", "root");
-				metaObjA.put("password", "123");
-				metaObjA.put("shell", "ls");
+				metaObjA.put("username", "baiyanwei");
+				metaObjA.put("password", "SELECTFROM");
+				metaObjA.put("host_ip","localhost");
+				metaObjA.put("port", "22");	
+				metaObjA.put("shell_command", "ls");
 				taskObjA.put(MonitoringTask.TASK_META_DATA_NAME, metaObjA);
 				messageObj.put(taskObjA);
 			}
@@ -122,5 +143,37 @@ public class Fetch extends HttpServlet {
 		}
 		return "{}";
 	}
+	public String getBody(HttpServletRequest request) throws IOException {
 
+		String body = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
+
+		try {
+			InputStream inputStream = request.getInputStream();
+			if (inputStream != null) {
+				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+				char[] charBuffer = new char[128];
+				int bytesRead = -1;
+				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+					stringBuilder.append(charBuffer, 0, bytesRead);
+				}
+			} else {
+				stringBuilder.append("");
+			}
+		} catch (IOException ex) {
+			throw ex;
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException ex) {
+					throw ex;
+				}
+			}
+		}
+
+		body = stringBuilder.toString();
+		return body;
+	}
 }
