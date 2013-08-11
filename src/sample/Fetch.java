@@ -79,7 +79,7 @@ public class Fetch extends HttpServlet {
 		}
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		out.print(getOneJobTest(count));
+		out.print(getSNMPest(count));
 		out.flush();
 		out.close();
 	}
@@ -133,6 +133,39 @@ public class Fetch extends HttpServlet {
 				metaObjA.put("host_ip","localhost");
 				metaObjA.put("port", "22");	
 				metaObjA.put("shell_command", "ls");
+				taskObjA.put(MonitoringTask.TASK_META_DATA_NAME, metaObjA);
+				messageObj.put(taskObjA);
+			}
+			//
+			return messageObj.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "{}";
+	}
+	private String getSNMPest(int count) {
+		try {
+			JSONArray messageObj = new JSONArray();
+			//
+			for (int i = 1; i <= count; i++) {
+				String tDate = new Date().toLocaleString();
+				JSONObject taskObjA = new JSONObject();
+				taskObjA.put(MonitoringTask.TASK_MONITOR_ID_PROPERTY_NAME, "TASK-HB-TEST-000" + i);
+				taskObjA.put(MonitoringTask.TASK_TIMESTAMP_PROPERTY_NAME, tDate);
+				taskObjA.put(MonitoringTask.TASK_CREATED_AD_PROPERTY_NAME, tDate);
+				taskObjA.put(MonitoringTask.TASK_OPERATION_PROPERTY_NAME, "snmp");
+				taskObjA.put(MonitoringTask.TASK_TARGET_IP_PROPERTY_NAME, "localhost");
+				//
+				JSONObject metaObjA = new JSONObject();
+				metaObjA.put("snmp_version", "3");
+				metaObjA.put("host_ip", "10.0.0.1");
+				metaObjA.put("port","22");
+				metaObjA.put("community", "22");	
+				metaObjA.put("mibs", "1,2,3");
+				metaObjA.put("username", "ls");
+				metaObjA.put("authPass", "ls");
+				metaObjA.put("priv", "ls");
+				metaObjA.put("privPass", "ls");
 				taskObjA.put(MonitoringTask.TASK_META_DATA_NAME, metaObjA);
 				messageObj.put(taskObjA);
 			}
