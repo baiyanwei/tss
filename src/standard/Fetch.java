@@ -100,12 +100,19 @@ public class Fetch extends HttpServlet {
 				JSONObject taskObjA = new JSONObject();
 				taskObjA.put("ip", "10.0.0." + i);
 				taskObjA.put(MonitoringTask.TASK_CREATED_AD_PROPERTY_NAME, tDate);
-				taskObjA.put("type", "HW");
+				taskObjA.put("num", "1");
+				taskObjA.put("dateFormat", "yyyymmddhhMMss");
 				//
-				ArrayList<String> rulesList = new ArrayList<String>();
-				rulesList.add("rule one");
-				rulesList.add("rule one");
-				taskObjA.put("rule", rulesList);
+				JSONObject regexs = new JSONObject();
+				regexs.put("ruleA", "ruleAValue");
+				regexs.put("ruleB", "ruleBValue");
+				
+				JSONObject protoFormat = new JSONObject();
+				protoFormat.put("protoFormat1", "protoFormat1");
+				protoFormat.put("protoFormat2", "protoFormat2");
+				//
+				taskObjA.put("regexs", regexs);
+				taskObjA.put("protoFormat", protoFormat);
 				messageObj.put(taskObjA);
 			}
 			//

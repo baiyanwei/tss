@@ -79,7 +79,7 @@ public class Fetch extends HttpServlet {
 		}
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		out.print(getSNMPest(count));
+		out.print(getOneJobTest(count));
 		out.flush();
 		out.close();
 	}
